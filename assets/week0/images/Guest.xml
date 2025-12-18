@@ -1,28 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="Guest.png">
-	<!-- Created with Adobe Animate version 20.0.3.25487 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="Guest Idle0000" x="10" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0001" x="704" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0002" x="704" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0003" x="1398" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0004" x="2092" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0005" x="2786" y="10" width="684" height="728"/>
-	<SubTexture name="Guest Idle0006" x="10" y="748" width="684" height="728"/>
-	<SubTexture name="Guest Idle0007" x="704" y="748" width="684" height="728"/>
-	<SubTexture name="Guest Idle0008" x="1398" y="748" width="684" height="728"/>
-	<SubTexture name="Guest Idle0009" x="2092" y="748" width="684" height="728"/>
-	<SubTexture name="Guest Idle0010" x="2786" y="748" width="684" height="728"/>
-	<SubTexture name="Guest Idle0011" x="10" y="1486" width="684" height="728"/>
-	<SubTexture name="Guest Idle0012" x="704" y="1486" width="684" height="728"/>
-	<SubTexture name="Guest Idle0013" x="1398" y="1486" width="684" height="728"/>
-	<SubTexture name="Guest Idle0014" x="2092" y="1486" width="684" height="728"/>
-	<SubTexture name="Guest Idle0015" x="2786" y="1486" width="684" height="728"/>
-	<SubTexture name="Guest Idle0016" x="10" y="2224" width="684" height="728"/>
-	<SubTexture name="Guest Idle0017" x="704" y="2224" width="684" height="728"/>
-	<SubTexture name="Guest Idle0018" x="1398" y="2224" width="684" height="728"/>
-	<SubTexture name="Guest Idle0019" x="2092" y="2224" width="684" height="728"/>
-	<SubTexture name="Guest Idle0020" x="2786" y="2224" width="684" height="728"/>
-	<SubTexture name="Guest Idle0021" x="10" y="2962" width="684" height="728"/>
-	<SubTexture name="Guest Idle0022" x="704" y="2962" width="684" height="728"/>
+	<!-- Created using the Spritesheet and XML generator -->
+	<!-- https://uncertainprod.github.io/FNF-Spritesheet-XML-generator-Web -->
+	<SubTexture name="Guest Idle0000" x="2655" y="676" width="525" height="676" frameX="-100" frameY="-42" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0001" x="533" y="673" width="530" height="654" frameX="-100" frameY="-59" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0002" x="533" y="673" width="530" height="654" frameX="-100" frameY="-59" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0003" x="535" y="2680" width="534" height="655" frameX="-98" frameY="-58" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0004" x="0" y="2680" width="535" height="656" frameX="-98" frameY="-57" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0005" x="2140" y="2016" width="535" height="657" frameX="-98" frameY="-56" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0006" x="1605" y="2016" width="535" height="659" frameX="-98" frameY="-55" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0007" x="1070" y="2016" width="535" height="661" frameX="-98" frameY="-53" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0008" x="535" y="2016" width="535" height="662" frameX="-98" frameY="-52" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0009" x="0" y="2016" width="535" height="664" frameX="-98" frameY="-51" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0010" x="1064" y="1343" width="535" height="665" frameX="-98" frameY="-50" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0011" x="530" y="1343" width="534" height="667" frameX="-98" frameY="-49" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0012" x="1064" y="669" width="534" height="668" frameX="-98" frameY="-48" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0013" x="1064" y="0" width="534" height="669" frameX="-98" frameY="-47" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0014" x="0" y="0" width="533" height="671" frameX="-98" frameY="-46" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0015" x="0" y="671" width="532" height="672" frameX="-98" frameY="-45" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0016" x="533" y="0" width="531" height="673" frameX="-99" frameY="-44" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0017" x="0" y="1343" width="530" height="673" frameX="-99" frameY="-44" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0018" x="1598" y="0" width="529" height="675" frameX="-99" frameY="-43" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0019" x="2127" y="0" width="528" height="675" frameX="-99" frameY="-43" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0020" x="2127" y="675" width="527" height="675" frameX="-100" frameY="-43" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0021" x="2655" y="0" width="526" height="676" frameX="-100" frameY="-42" frameWidth="684" frameHeight="728"/>
+	<SubTexture name="Guest Idle0022" x="3181" y="0" width="525" height="676" frameX="-100" frameY="-42" frameWidth="684" frameHeight="728"/>
 </TextureAtlas>
