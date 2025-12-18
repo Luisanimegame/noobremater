@@ -5,363 +5,222 @@ import flixel.text.FlxText;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
-import flixel.util.FlxSave;
 import flixel.math.FlxPoint;
 import haxe.Json;
-import ui.OptionsState;
 import lime.system.Clipboard;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
 
-class CustomControlsState extends MusicBeatSubstate
-{
-	var _pad:FlxVirtualPad;
-	var _hb:HitBox;
-
-	var exitbutton:FlxUIButton;
-	var exportbutton:FlxUIButton;
-	var importbutton:FlxUIButton;
-
-	var up_text:FlxText;
-	var down_text:FlxText;
-	var left_text:FlxText;
-	var right_text:FlxText;
-
-	var inputvari:FlxText;
-
-	var leftArrow:FlxSprite;
-	var rightArrow:FlxSprite;
-	var controlitems:Array<String> = ['right control', 'left control','keyboard','custom', 'hitbox'];
-
-	var curSelected:Int = 0;
-
-	var buttonistouched:Bool = false;
-
-	var bindbutton:FlxButton;
-
-	var config:Config;
-
-	public function new()
-	{
-		super();
-
-		//init config
-		config = new Config();
-
-		// bg
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic('assets/images/menuBGBlue.png');
-		bg.scrollFactor.x = 0;
-		bg.scrollFactor.y = 0.18;
-		bg.setGraphicSize(Std.int(bg.width * 1.1));
-		bg.updateHitbox();
-		bg.screenCenter();
-		bg.antialiasing = true;
-
-		// load curSelected
-		curSelected = config.getcontrolmode();
-
-		//pad
-		_pad = new FlxVirtualPad(RIGHT_FULL, NONE);
-		_pad.alpha = 0;
-
-		//text inputvari
-		inputvari = new FlxText(125, 50, 0,controlitems[0], 48);
-
-		//arrows
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
-
-		leftArrow = new FlxSprite(inputvari.x - 60,inputvari.y - 10);
-		leftArrow.frames = ui_tex;
-		leftArrow.animation.addByPrefix('idle', "arrow left");
-		leftArrow.animation.addByPrefix('press', "arrow push left");
-		leftArrow.animation.play('idle');
-
-		rightArrow = new FlxSprite(inputvari.x + inputvari.width + 10, leftArrow.y);
-		rightArrow.frames = ui_tex;
-		rightArrow.animation.addByPrefix('idle', 'arrow right');
-		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
-		rightArrow.animation.play('idle');
-
-		//text
-		up_text = new FlxText(200, 200, 0,"Button up x:" + _pad.buttonUp.x +" y:" + _pad.buttonUp.y, 24);
-		down_text = new FlxText(200, 250, 0,"Button down x:" + _pad.buttonDown.x +" y:" + _pad.buttonDown.y, 24);
-		left_text = new FlxText(200, 300, 0,"Button left x:" + _pad.buttonLeft.x +" y:" + _pad.buttonLeft.y, 24);
-		right_text = new FlxText(200, 350, 0,"Button right x:" + _pad.buttonRight.x +" y:" + _pad.buttonRight.y, 24);
-
-		//hitboxes
-		_hb = new HitBox();
-		_hb.visible = false;
-
-		// buttons
-		exitbutton = new FlxUIButton(FlxG.width - 650,25,"exit");
-		exitbutton.resize(125,50);
-		exitbutton.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
-
-		var savebutton = new FlxUIButton((exitbutton.x + exitbutton.width + 25),25,"exit and save",() -> {
-			save();
-			FlxG.switchState(new OptionsMenuState());
-		});
-		savebutton.resize(250,50);
-		savebutton.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
-
-		exportbutton = new FlxUIButton(FlxG.width - 150, 25, "export", () -> { savetoclipboard(_pad); } );
-		exportbutton.resize(125,50);
-		exportbutton.setLabelFormat("VCR OSD Mono", 24, FlxColor.BLACK,"center");
-
-		importbutton = new FlxUIButton(exportbutton.x, 100, "import", () -> { loadfromclipboard(_pad); });
-		importbutton.resize(125,50);
-		importbutton.setLabelFormat("VCR OSD Mono", 24, FlxColor.BLACK,"center");
-
-		// add bg
-		add(bg);
-
-		// add buttons
-		add(exitbutton);
-		add(savebutton);
-		add(exportbutton);
-		add(importbutton);
-
-		// add virtualpad
-		this.add(_pad);
-
-		//add hb
-		add(_hb);
-
-		// add arrows and text
-		add(inputvari);
-		add(leftArrow);
-		add(rightArrow);
-
-		// add texts
-		add(up_text);
-		add(down_text);
-		add(left_text);
-		add(right_text);
-
-		// change selection
-		changeSelection();
-	}
-
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-
-		var androidback:Bool = #if android FlxG.android.justReleased.BACK #else false #end;
-		if (exitbutton.justReleased || androidback)
-			FlxG.switchState(new OptionsMenuState());
-		
-		for (touch in FlxG.touches.list){
-			//left arrow animation
-			arrowanimate(touch);
-			
-			//change Selection
-			if(touch.overlaps(leftArrow) && touch.justPressed)
-				changeSelection(-1);
-			else if (touch.overlaps(rightArrow) && touch.justPressed)
-				changeSelection(1);
-
-			//custom pad 
-			trackbutton(touch);
-		}
-	}
-
-	function changeSelection(change:Int = 0,?forceChange:Int)
-		{
-			curSelected += change;
-	
-			if (curSelected < 0)
-				curSelected = controlitems.length - 1;
-			if (curSelected >= controlitems.length)
-				curSelected = 0;
-			trace(curSelected);
-	
-			if (forceChange != null)
-				curSelected = forceChange;
-	
-			inputvari.text = controlitems[curSelected];
-
-			if (forceChange != null)
-				{
-					if (curSelected == 2)
-						_pad.visible = true;
-
-					return;
-				}
-			
-			_hb.visible = false;
-	
-			switch curSelected{
-				case 0:
-					this.remove(_pad);
-					_pad = null;
-					_pad = new FlxVirtualPad(RIGHT_FULL, NONE);
-					_pad.alpha = 0.75;
-					this.add(_pad);
-				case 1:
-					this.remove(_pad);
-					_pad = null;
-					_pad = new FlxVirtualPad(FULL, NONE);
-					_pad.alpha = 0.75;
-					this.add(_pad);
-				case 2:
-					_pad.alpha = 0;
-				case 3:
-					this.add(_pad);
-					_pad.alpha = 0.75;
-					loadcustom();
-				case 4:
-					remove(_pad);
-					_pad.alpha = 0;
-					_hb.visible = true;
-			}
-		}
-
-	function arrowanimate(touch:flixel.input.touch.FlxTouch){
-		if(touch.overlaps(leftArrow) && touch.pressed)
-			leftArrow.animation.play('press');
-		
-		if(touch.overlaps(leftArrow) && touch.released)
-			leftArrow.animation.play('idle');
-
-		//right arrow animation
-		if(touch.overlaps(rightArrow) && touch.pressed)
-			rightArrow.animation.play('press');
-		
-		if(touch.overlaps(rightArrow) && touch.released)
-			rightArrow.animation.play('idle');
-	}
-
-	function trackbutton(touch:flixel.input.touch.FlxTouch){
-		//custom pad
-
-		if (buttonistouched){
-			
-			if (bindbutton.justReleased && touch.justReleased)
-			{
-				bindbutton = null;
-				buttonistouched = false;
-			}else 
-			{
-				movebutton(touch, bindbutton);
-				setbuttontexts();
-			}
-
-		}else {
-			if (_pad.buttonUp.justPressed) {
-				if (curSelected != 3)
-					changeSelection(0,3);
-
-				movebutton(touch, _pad.buttonUp);
-			}
-			
-			if (_pad.buttonDown.justPressed) {
-				if (curSelected != 3)
-					changeSelection(0,3);
-
-				movebutton(touch, _pad.buttonDown);
-			}
-
-			if (_pad.buttonRight.justPressed) {
-				if (curSelected != 3)
-					changeSelection(0,3);
-
-				movebutton(touch, _pad.buttonRight);
-			}
-
-			if (_pad.buttonLeft.justPressed) {
-				if (curSelected != 3)
-					changeSelection(0,3);
-
-				movebutton(touch, _pad.buttonLeft);
-			}
-		}
-	}
-
-	function movebutton(touch:flixel.input.touch.FlxTouch, button:FlxButton) {
-		button.x = touch.x - _pad.buttonUp.width / 2;
-		button.y = touch.y - _pad.buttonUp.height / 2;
-		bindbutton = button;
-		buttonistouched = true;
-	}
-
-	function setbuttontexts() {
-		up_text.text = "Button up x:" + _pad.buttonUp.x +" y:" + _pad.buttonUp.y;
-		down_text.text = "Button down x:" + _pad.buttonDown.x +" y:" + _pad.buttonDown.y;
-		left_text.text = "Button left x:" + _pad.buttonLeft.x +" y:" + _pad.buttonLeft.y;
-		right_text.text = "Button right x:" + _pad.buttonRight.x +" y:" + _pad.buttonRight.y;
-	}
-
-	function save() {
-
-		config.setcontrolmode(curSelected);
-		
-		if (curSelected == 3)
-			savecustom();
-	}
-
-	function savecustom()
-		config.savecustom(_pad);
-
-	function loadcustom():Void
-		_pad = config.loadcustom(_pad);
-
-	function resizebuttons(vpad:FlxVirtualPad, ?int:Int = 200) {
-		for (button in vpad)
-		{
-				button.setGraphicSize(260);
-				button.updateHitbox();
-		}
-	}
-
-	function savetoclipboard(pad:FlxVirtualPad) {
-		trace("saved");
-		
-		var json = {
-			buttonsarray : []
-		};
-
-		var tempCount:Int = 0;
-		var buttonsarray = new Array();
-		
-		for (buttons in pad)
-		{
-			buttonsarray[tempCount] = FlxPoint.get(buttons.x, buttons.y);
-
-			tempCount++;
-		}
-
-		json.buttonsarray = buttonsarray;
-
-		trace(json);
-
-		var data:String = Json.stringify(json);
-
-		openfl.system.System.setClipboard(data.trim());
-	}
-
-	function loadfromclipboard(pad:FlxVirtualPad):Void{
-		//load pad
-
-		if (curSelected != 3)
-			changeSelection(0,3);
-
-		var cbtext:String = Clipboard.text; // this not working on android 10 or higher
-
-		if (!cbtext.endsWith("}")) return;
-
-		var json = Json.parse(cbtext);
-
-		var tempCount:Int = 0;
-
-		for(buttons in pad)
-		{
-			buttons.x = json.buttonsarray[tempCount].x;
-			buttons.y = json.buttonsarray[tempCount].y;
-			tempCount++;
-		}	
-		setbuttontexts();
-	}
-
-	override function destroy()
-		super.destroy();
+class CustomControlsState extends MusicBeatSubstate {
+    var _pad:FlxVirtualPad;
+    var _hb:HitBox;
+
+    var exitButton:FlxUIButton;
+    var exportButton:FlxUIButton;
+    var importButton:FlxUIButton;
+
+    var inputVari:FlxText;
+    var upText:FlxText;
+    var downText:FlxText;
+    var leftText:FlxText;
+    var rightText:FlxText;
+
+    var leftArrow:FlxSprite;
+    var rightArrow:FlxSprite;
+    var controlItems:Array<String> = ['right control', 'left control', 'keyboard', 'custom', 'hitbox'];
+
+    var curSelected:Int = 0;
+    var buttonIsTouched:Bool = false;
+    var bindButton:FlxButton;
+    var config:Config;
+
+    public function new() {
+        super();
+        config = new Config();
+        var bg:FlxSprite = new FlxSprite(-80).loadGraphic('assets/images/menuBGBlue.png');
+        bg.scrollFactor.set(0, 0.18);
+        bg.setGraphicSize(Std.int(bg.width * 1.1));
+        bg.updateHitbox();
+        bg.screenCenter();
+        bg.antialiasing = true;
+        add(bg);
+
+        curSelected = config.getcontrolmode();
+        _pad = new FlxVirtualPad(RIGHT_FULL, NONE);
+        _pad.alpha = 0;
+        inputVari = new FlxText(125, 50, 0, controlItems[0], 48);
+        _hb = new HitBox();
+        _hb.visible = false;
+
+        exitButton = createButton(FlxG.width - 650, 25, 'exit', null);
+        exitButton.resize(125, 50);
+        var saveButton = createButton(exitButton.x + exitButton.width + 25, 25, 'exit and save', () ->
+        {
+            save();
+            close();
+        });
+        saveButton.resize(250, 50);
+        exportButton = createButton(FlxG.width - 150, 25, 'export', () -> savetoclipboard(_pad));
+        exportButton.resize(125, 50);
+        importButton = createButton(exportButton.x, 100, 'import', () -> loadfromclipboard(_pad));
+        importButton.resize(125, 50);
+        for (button in [exitButton, saveButton, exportButton, importButton]) add(button);
+        /*add(exitButton);
+        add(saveButton);
+        add(exportButton);
+        add(importButton);*/
+
+        upText = createText(200, 200, 'Button up x:' + _pad.buttonUp.x + ' y:' + _pad.buttonUp.y);
+        downText = createText(200, 250, 'Button down x:' + _pad.buttonDown.x + ' y:' + _pad.buttonDown.y);
+        leftText = createText(200, 300, 'Button left x:' + _pad.buttonLeft.x + ' y:' + _pad.buttonLeft.y);
+        rightText = createText(200, 350, 'Button right x:' + _pad.buttonRight.x + ' y:' + _pad.buttonRight.y);
+        for (txt in [upText, downText, leftText, rightText]) add(txt);
+        /*add(upText);
+        add(downText);
+        add(leftText);
+        add(rightText);*/
+
+        var arrowTex = FlxAtlasFrames.fromSparrow('assets/mobile/arrows.png', 'assets/mobile/arrows.xml');
+        leftArrow = createArrow(inputVari.x - 60, inputVari.y - 10, arrowTex, 'arrow left', 'arrow push left');
+        rightArrow = createArrow(inputVari.x + inputVari.width + 10, leftArrow.y, arrowTex, 'arrow right', 'arrow push right');
+        for (obj in [leftArrow, rightArrow, inputVari, _pad, _hb]) add(obj);
+        /*add(leftArrow);
+        add(rightArrow);
+        add(inputVari);
+        add(_pad);
+        add(_hb);*/
+
+        changeSelection();
+    }
+
+    function createButton(x:Float, y:Float, label:String, onClick:Void->Void):FlxUIButton {
+        var button = new FlxUIButton(x, y, label, onClick);
+        button.setLabelFormat('VCR OSD Mono', 24, FlxColor.BLACK, 'center');
+        return button;
+    }
+
+    function createText(x:Float, y:Float, text:String):FlxText {
+        return new FlxText(x, y, 0, text, 24);
+    }
+
+    function createArrow(x:Float, y:Float, frames:FlxAtlasFrames, idlePrefix:String, pressPrefix:String):FlxSprite {
+        var arrow = new FlxSprite(x, y);
+        arrow.frames = frames;
+        arrow.animation.addByPrefix('idle', idlePrefix);
+        arrow.animation.addByPrefix('press', pressPrefix);
+        arrow.animation.play('idle');
+        return arrow;
+    }
+
+    override function update(elapsed:Float) {
+        super.update(elapsed);
+        if (exitButton.justReleased #if android || FlxG.android.justReleased.BACK #end) close();
+        for (touch in FlxG.touches.list) handleTouch(touch);
+    }
+
+    function handleTouch(touch:flixel.input.touch.FlxTouch) {
+        if (touch.overlaps(leftArrow) && touch.justPressed) changeSelection(-1);
+        else if (touch.overlaps(rightArrow) && touch.justPressed) changeSelection(1);
+        arrowAnimate(touch);
+        trackButton(touch);
+    }
+
+    function changeSelection(change:Int = 0, ?forceChange:Int = null) {
+        curSelected = (curSelected + change + controlItems.length) % controlItems.length;
+        if (forceChange != null) curSelected = forceChange;
+
+        inputVari.text = controlItems[curSelected];
+        _pad.visible = curSelected == 2;
+        _hb.visible = false;
+        switch (curSelected) {
+            case 0: updatePad(RIGHT_FULL, 0.75);
+            case 1: updatePad(FULL, 0.75);
+            case 2: _pad.alpha = 0;
+            case 3: loadCustom(); updatePad(FULL, 0.75);
+            case 4: remove(_pad); _hb.visible = true;
+        }
+    }
+
+    function updatePad(mode, alpha:Float) {
+        remove(_pad);
+        _pad = new FlxVirtualPad(mode, NONE);
+        _pad.alpha = alpha;
+        add(_pad);
+    }
+
+    function arrowAnimate(touch:flixel.input.touch.FlxTouch) {
+        if (touch.overlaps(leftArrow)) leftArrow.animation.play(touch.pressed ? 'press' : 'idle');
+        if (touch.overlaps(rightArrow)) rightArrow.animation.play(touch.pressed ? 'press' : 'idle');
+    }
+
+    function trackButton(touch:flixel.input.touch.FlxTouch) {
+        if (buttonIsTouched) {
+            if (bindButton.justReleased && touch.justReleased) {
+                bindButton = null;
+                buttonIsTouched = false;
+            } else {
+                moveButton(touch, bindButton);
+                setButtonTexts();
+            }
+        } else {
+            if (_pad.buttonUp.justPressed) handleButtonPress(touch, _pad.buttonUp);
+            if (_pad.buttonDown.justPressed) handleButtonPress(touch, _pad.buttonDown);
+            if (_pad.buttonRight.justPressed) handleButtonPress(touch, _pad.buttonRight);
+            if (_pad.buttonLeft.justPressed) handleButtonPress(touch, _pad.buttonLeft);
+        }
+    }
+
+    function handleButtonPress(touch:flixel.input.touch.FlxTouch, button:FlxButton) {
+        if (curSelected != 3) changeSelection(0, 3);
+        moveButton(touch, button);
+    }
+
+    function moveButton(touch:flixel.input.touch.FlxTouch, button:FlxButton) {
+        button.x = touch.x - button.width / 2;
+        button.y = touch.y - button.height / 2;
+        bindButton = button;
+        buttonIsTouched = true;
+    }
+
+    function setButtonTexts() {
+        upText.text = 'Button up x:' + _pad.buttonUp.x + ' y:' + _pad.buttonUp.y;
+        downText.text = 'Button down x:' + _pad.buttonDown.x + ' y:' + _pad.buttonDown.y;
+        leftText.text = 'Button left x:' + _pad.buttonLeft.x + ' y:' + _pad.buttonLeft.y;
+        rightText.text = 'Button right x:' + _pad.buttonRight.x + ' y:' + _pad.buttonRight.y;
+    }
+
+    function save() {
+        config.setcontrolmode(curSelected);
+        if (curSelected == 3) saveCustom();
+    }
+
+    function saveCustom()
+        config.savecustom(_pad);
+
+    function loadCustom():Void
+        _pad = config.loadcustom(_pad);
+
+    function savetoclipboard(pad:FlxVirtualPad) {
+        var json = { buttonsarray: [] };
+        for (button in pad) json.buttonsarray.push(FlxPoint .get(button.x, button.y));
+        openfl.system.System.setClipboard(Json.stringify(json).trim());
+    }
+
+    function loadfromclipboard(pad:FlxVirtualPad):Void {
+        if (curSelected != 3) changeSelection(0, 3);
+        var cbText:String = Clipboard.text; // this not working on android 10 or higher
+        // Wait, really?? ~ Idklool 2025
+        if (!cbText.endsWith('}')) return;
+
+        var json = Json.parse(cbText);
+        for (i in 0...pad.length) {
+            pad.x = json.buttonsarray[i].x;
+            pad.y = json.buttonsarray[i].y;
+        }
+        setButtonTexts();
+    }
+
+    override function destroy()
+        super.destroy();
 }

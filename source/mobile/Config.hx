@@ -16,7 +16,7 @@ class Config {
     public function getcontrolmode():Int {
         // load control mode num from FlxSave
 		if (save.data.buttonsmode != null) return save.data.buttonsmode[0];
-        return 0;
+        return 4;
     }
 
     public function setcontrolmode(mode:Int = 0):Int {
