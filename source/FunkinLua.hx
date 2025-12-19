@@ -883,18 +883,11 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "startVideo", function(videoFile:String) {
 			#if VIDEOS_ALLOWED
-			if(FileSystem.exists(Paths.modsVideo(videoFile))) {
-				lePlayState.startVideo(videoFile);
-			} else {
-				luaTrace('Video file not found: ' + videoFile);
-			}
-			#else
 			if(lePlayState.endingSong) {
 				lePlayState.endSong();
 			} else {
 				lePlayState.startCountdown();
 			}
-			#end
 		});
 		
 		Lua_helper.add_callback(lua, "playMusic", function(sound:String, volume:Float = 1, loop:Bool = false) {
