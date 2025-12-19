@@ -55,7 +55,8 @@ import sys.FileSystem;
 #end
 
 #if VIDEOS_ALLOWED
-import VideoHandler;
+import hxvlc.flixel.*;
+import VideoSpriteUtils;
 #end
 
 using StringTools;
@@ -1218,49 +1219,40 @@ class PlayState extends MusicBeatState
 	public function startVideo(name:String):Void {
 		#if VIDEOS_ALLOWED
 		var foundFile:Bool = false;
-		var fileName:String = #if MODS_ALLOWED Paths.modFolders('videos/' + name + '.' + Paths.VIDEO_EXT); #else ''; #end
+		var fileName:String = Paths.video(name);
+		
 		#if sys
-		if(FileSystem.exists(fileName)) {
-			foundFile = true;
-		}
+		if(FileSystem.exists(fileName))
+		#else
+		if(OpenFlAssets.exists(fileName))
 		#end
-
-		if(!foundFile) {
-			fileName = Paths.video(name);
-			#if sys
-			if(FileSystem.exists(fileName)) {
-			#else
-			if(OpenFlAssets.exists(fileName)) {
-			#end
-				foundFile = true;
-			}
-		}
-
-		if(foundFile) {
-			inCutscene = true;
-			var bg = new FlxSprite(-FlxG.width, -FlxG.height).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
-			bg.scrollFactor.set();
-			bg.cameras = [camHUD];
-			add(bg);
-
-			(new VideoHandler(fileName)).finishCallback = function() {
-				remove(bg);
-				if(endingSong) {
-					endSong();
-				} else {
-					startCountdown();
-				}
-			}
+		{
+			FlxG.log.warn('Couldnt find video file: ' + name);
+			startAndEnd();
 			return;
-		} else {
-			FlxG.log.warn('Couldnt find video file: ' + fileName);
 		}
+		
+		var video:VideoSpriteUtils = new VideoSpriteUtils();
+		video.load(fileName);
+		video.playVideo();
+		video.finishCallback = function()
+		{
+			startAndEnd();
+			return;
+		}
+		#else
+		// FlxG.log.warn('Platform not supported!');
+		startAndEnd();
+		return;
 		#end
-		if(endingSong) {
+	}
+	
+	function startAndEnd()
+	{
+		if(endingSong)
 			endSong();
-		} else {
+		else
 			startCountdown();
-		}
 	}
 
 	var dialogueCount:Int = 0;
