@@ -17,7 +17,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
 import WeekData;
-import hxcodec.VideoHandler;
 
 using StringTools;
 
@@ -302,17 +301,8 @@ class StoryMenuState extends MusicBeatState
 			PlayState.campaignMisses = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-				if (curWeek == 0) {
-					var video:VideoHandler = new VideoHandler();
-					video.playVideo(Paths.video("cmr"));
-					video.finishCallback = function()
-				    {
-					  LoadingState.loadAndSwitchState(new PlayState(), true);
-					}
-				}
-				
-				// bruh
-				FreeplayState.destroyFreeplayVocals();
+			 LoadingState.loadAndSwitchState(new PlayState(), true);
+			 FreeplayState.destroyFreeplayVocals();
 			});
 		}
 	}
