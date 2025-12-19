@@ -47,7 +47,7 @@ class FlashingState extends MusicBeatState
         #end
 		
 			var back:Bool = controls.BACK;
-			if (controls.ACCEPT #if mobile || jusTouched #end || back #if android || FlxG.android.justReleased.BACK #end) {
+			if (controls.ACCEPT #if android || FlxG.android.justReleased.BACK #end || back #if mobile || jusTouched #end) {
 				leftState = true;
 				FlxTransitionableState.skipNextTransIn = true;
 				FlxTransitionableState.skipNextTransOut = true;

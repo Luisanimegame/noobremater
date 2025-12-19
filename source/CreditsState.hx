@@ -24,10 +24,10 @@ class CreditsState extends MusicBeatState
 	private var iconArray:Array<AttachedSprite> = [];
 
 	private static var creditsStuff:Array<Dynamic> = [ //Name - Icon name - Description - Link - BG Color
-	  ['Android Port'],
-	  ['Gabo', 'gagbo', 'android port e etc.', 'https://www.youtube.com/c/GaboBooX', '0xFF844BFC'],
-	  ['idklool', 'dk', 'controles funnys', 'https://www.youtube.com/c/idklool122', '0xFF2806B5'],
-	  [''],
+		['Android Port'],
+		['Gabo', 'gagbo', 'android port e etc.', 'https://www.youtube.com/@GaboBooX', 0xFF844BFC], // a burrice do homem
+		['Idklool', 'dk', 'controles funnys', 'https://www.youtube.com/@idklool122', 0xFF2806B5],
+		[''],
 		['Noob Mod Team'],
 		['ToadOdyssey',		'toadodyssey',		'Art and Organizing',					'https://www.youtube.com/c/ToadOdyssey',	0xFF97C8FF],
 		['Trayfellow',			'trayfellow',		'Programmer',				'https://twitter.com/trayfellow',		0xFF0015AE],

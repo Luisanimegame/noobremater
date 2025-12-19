@@ -710,6 +710,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		#end
 		'GAMEPLAY',
 		'Downscroll',
+		'InvHitbox',
 		'Middlescroll',
 		'Ghost Tapping',
 		'Note Delay',
@@ -892,6 +893,9 @@ class PreferencesSubstate extends MusicBeatSubstate
 
 					case 'Downscroll':
 						ClientPrefs.downScroll = !ClientPrefs.downScroll;
+					
+					case 'InvHitbox':
+						ClientPrefs.hitInv = !ClientPrefs.hitInv;
 
 					case 'Middlescroll':
 						ClientPrefs.middleScroll = !ClientPrefs.middleScroll;
@@ -988,6 +992,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 				daText = "If checked, notes go Down instead of Up, simple enough.";
 			case 'Middlescroll':
 				daText = "If checked, hides Opponent's notes and your notes get centered.";
+			case 'InvHitbox':
+				daText = "gameplay mode";
 			case 'Ghost Tapping':
 				daText = "If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.";
 			case 'Swearing':
@@ -1060,6 +1066,8 @@ class PreferencesSubstate extends MusicBeatSubstate
 						daValue = ClientPrefs.flashing;
 					case 'Downscroll':
 						daValue = ClientPrefs.downScroll;
+					case 'InvHitbox':
+						daValue = ClientPrefs.hitInv;
 					case 'Middlescroll':
 						daValue = ClientPrefs.middleScroll;
 					case 'Ghost Tapping':
