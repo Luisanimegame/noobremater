@@ -714,7 +714,7 @@ class PlayState extends MusicBeatState
 				rocketblock.antialiasing = ClientPrefs.globalAntialiasing;
 				rocketblock.setGraphicSize(Std.int(rocketblock.width * 0.1));
 				rocketblock.updateHitbox();
-				rocketblock.visible = false;
+				rocketblock.alpha = 0.001;
 				add(rocketblock);
 
 				if(!ClientPrefs.lowQuality) {
@@ -2913,7 +2913,7 @@ class PlayState extends MusicBeatState
 				}
 			case 'Shoot Rocket Launcher':
 				if(curStage == 'crossroads' && !ClientPrefs.lowQuality) {
-					rocketblock.visible = true;
+					rocketblock.alpha = 1;
 					FlxTween.tween(rocketblock, { x: 830, "scale.x": 0.8, "scale.y": 0.8 }, 1.6, {
 						onComplete: function(twn:FlxTween)
 							{
