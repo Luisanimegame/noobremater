@@ -25,8 +25,8 @@ class CreditsState extends MusicBeatState
 
 	private static var creditsStuff:Array<Dynamic> = [ //Name - Icon name - Description - Link - BG Color
 		['Android Port'],
-		['Gabo', 'gagbo', 'android port e etc.', 'https://www.youtube.com/@GaboBooX', 0xFF844BFC], // a burrice do homem
-		['Idklool', 'dk', 'controles funnys', 'https://www.youtube.com/@idklool122', 0xFF2806B5],
+		['Gabo', 'gagbo', 'android port paia', 'https://www.youtube.com/@GaboBooX', 0xFF844BFC], // a burrice do homem
+		['Idklool', 'dk', 'me ajudou muito, alem de ter feito os controles', 'https://www.youtube.com/@idklool122', 0xFF2806B5],
 		[''],
 		['Noob Mod Team'],
 		['ToadOdyssey',		'toadodyssey',		'Art and Organizing',					'https://www.youtube.com/c/ToadOdyssey',	0xFF97C8FF],
